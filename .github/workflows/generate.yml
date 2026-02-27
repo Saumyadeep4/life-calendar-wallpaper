@@ -23,11 +23,16 @@ jobs:
 
       - name: Generate wallpaper
         run: node generate.js
-
-      - name: Commit and push generated image
+            - name: Push to gh-pages branch
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add output/wallpaper3.png
-          git commit -m "Update wallpaper"
-          git push
+
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          cp output/wallpaper3.png .
+
+          git add wallpaper3.png
+          git commit -m "Update wallpaper" || echo "No changes to commit"
+          git push origin gh-pages
