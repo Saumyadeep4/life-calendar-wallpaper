@@ -75,7 +75,7 @@ currentY = topSafeArea + (availableHeight - gridHeight) / 2;
 // ----------------------
 // Bottom Center Stats
 // ----------------------
-const bottomCenterY = height - (bottomSafeArea / 1.4);
+const bottomCenterY = height - (bottomSafeArea / 1.2);
 
 ctx.textAlign = "center";
 
