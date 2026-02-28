@@ -18,11 +18,12 @@ ctx.fillStyle = gradient;
 ctx.fillRect(0, 0, width, height);
 
 // ----------------------
-// Date Logic
+// Date Logic (Force IST)
 // ----------------------
 const today = new Date(
   new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
 );
+
 const start = new Date(today.getFullYear(), 0, 0);
 const diff = today - start;
 const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -31,12 +32,9 @@ const isLeap =
   new Date(today.getFullYear(), 1, 29).getMonth() === 1;
 const daysInYear = isLeap ? 366 : 365;
 
-
-const daysRemaining = daysInYear - dayOfYear;
-
 const percentComplete = ((dayOfYear / daysInYear) * 100).toFixed(1);
 
-// ISO week number calculation
+// ISO Week Number
 const tempDate = new Date(today.valueOf());
 const dayNum = (today.getDay() + 6) % 7;
 tempDate.setDate(tempDate.getDate() - dayNum + 3);
@@ -48,68 +46,52 @@ if (tempDate.getDay() !== 4) {
 const weekNumber =
   1 + Math.ceil((firstThursday - tempDate) / 604800000);
 
-const month = today.toLocaleString("en-US", { month: "long" });
-const dayName = today.toLocaleString("en-US", { weekday: "long" });
-const dateNumber = today.getDate();
-const year = today.getFullYear();
-
-/*
-  Layout Strategy for Lock Screen:
-  - Top area reserved for iOS clock
-  - Middle area for grid
-  - Bottom area reserved for widgets
-*/
-
+// ----------------------
+// Layout Safe Zones
+// ----------------------
 const topSafeArea = height * 0.32;      // space for clock
 const bottomSafeArea = height * 0.28;   // space for widgets
 let currentY = topSafeArea;
 
 // ----------------------
-// Grid (Larger + Screen Filling)
+// Grid Settings
 // ----------------------
-
-const sidePadding = 160; // safe margin to avoid iOS zoom crop
-const cols = 18;         // reduced to prevent horizontal truncation
+const sidePadding = 160;
+const cols = 18;
 const dotSize = 26;
 
-// Compute gap dynamically so grid fits inside safe area
 const availableWidth = width - sidePadding * 2;
-
-/*
-  Correct horizontal math first:
-  Total width = (cols * dotSize) + ((cols - 1) * gap)
-*/
 const gap = (availableWidth - (cols * dotSize)) / (cols - 1);
 
 const gridWidth = (cols * dotSize) + ((cols - 1) * gap);
 const offsetX = (width - gridWidth) / 2;
 
-// Calculate rows dynamically based on total days
 const rows = Math.ceil(daysInYear / cols);
 
-// Now compute vertical centering safely
 const gridHeight = (rows * dotSize) + ((rows - 1) * gap);
 const availableHeight = height - topSafeArea - bottomSafeArea;
 currentY = topSafeArea + (availableHeight - gridHeight) / 2;
 
-/*
-  Bottom Center Info (Inside Red-Circle Safe Zone)
-*/
-
+// ----------------------
+// Bottom Center Stats
+// ----------------------
 const bottomCenterY = height - (bottomSafeArea / 1.4);
 
 ctx.textAlign = "center";
 
-// Percentage (Primary Stat)
+// % Completed
 ctx.fillStyle = "rgba(255,255,255,0.85)";
 ctx.font = "600 60px Helvetica";
 ctx.fillText(`${percentComplete}% of year complete`, width / 2, bottomCenterY - 40);
 
-// Week Number (Secondary Stat)
+// Week Number
 ctx.fillStyle = "rgba(255,255,255,0.6)";
 ctx.font = "400 42px Helvetica";
 ctx.fillText(`Week ${weekNumber}`, width / 2, bottomCenterY + 30);
 
+// ----------------------
+// Draw Grid
+// ----------------------
 let count = 0;
 
 for (let r = 0; r < rows; r++) {
@@ -143,11 +125,10 @@ for (let r = 0; r < rows; r++) {
 // ----------------------
 // Save
 // ----------------------
-
 if (!fs.existsSync("output")) {
   fs.mkdirSync("output");
 }
 
-fs.writeFileSync("output/wallpaper3.png", canvas.toBuffer("image/png"));
+fs.writeFileSync("output/wallpaper.png", canvas.toBuffer("image/png"));
 
-console.log("Properly scaled iPhone 15 wallpaper generated.");
+console.log("Wallpaper generated successfully.");
