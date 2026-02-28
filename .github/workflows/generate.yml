@@ -1,16 +1,21 @@
 name: Generate Wallpaper
 
 on:
-  schedule:
-    - cron: "30 18 * * *"  # 00:00 IST
   workflow_dispatch:
+  schedule:
+    - cron: "30 18 * * *"  # 00:00 IST (18:30 UTC)
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main branch
+      - name: Checkout main
         uses: actions/checkout@v3
         with:
           ref: main
@@ -26,23 +31,9 @@ jobs:
       - name: Generate wallpaper
         run: node generate.js
 
-      - name: Deploy to gh-pages branch
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
-          # Fetch and switch to gh-pages
-          git fetch origin gh-pages || git checkout --orphan gh-pages
-          git checkout gh-pages || git checkout --orphan gh-pages
-
-          # Remove everything in gh-pages
-          git rm -rf . || true
-
-          # Copy generated image from main workspace
-          cp output/wallpaper3.png .
-
-          # Add and commit
-          git add wallpaper3.png
-          git commit -m "Update wallpaper" || echo "No changes to commit"
-
-          git push origin gh-pages
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          publish_branch: gh-pages
