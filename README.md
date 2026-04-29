@@ -1,6 +1,6 @@
 # Life Calendar Lock Screen Wallpaper
 
-A fully automated iPhone lock screen wallpaper that visualizes the current year as a grid of days.
+A fully automated mobile lock screen wallpaper that visualizes the current year as a grid of days.
 
 The wallpaper updates automatically at 00:00 IST using GitHub Actions and is served via GitHub Pages.
 
