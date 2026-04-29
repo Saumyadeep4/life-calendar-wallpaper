@@ -8,7 +8,6 @@ The wallpaper updates automatically at 00:00 IST using GitHub Actions and is ser
 
 ## ✨ Features
 
-- iPhone 15 portrait resolution (1179 × 2556)
 - Lock screen safe layout (does not clash with clock or widgets)
 - Dynamic year grid (one dot per day)
 - Current day highlighted
